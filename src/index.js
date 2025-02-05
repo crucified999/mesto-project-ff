@@ -1,6 +1,22 @@
+import "../pages/index.css";
+import { initialCards } from "./cards.js";
+import { openPopup, closePopup } from './popup.js';
+
 // @todo: Темплейт карточки
 
 // @todo: DOM узлы
+
+const popupEditProfile = document.querySelector('.popup_type_edit');
+const popupNewCard = document.querySelector(".popup_type_new-card");
+
+const profileEditButton = document.querySelector('.profile__edit-button');
+const profileAddButton = document.querySelector(".profile__add-button");
+
+profileEditButton.addEventListener('click', openPopup);
+popupEditProfile.addEventListener('click', closePopup);
+
+profileAddButton.addEventListener("click", openPopup);
+popupNewCard.addEventListener("click", closePopup);
 
 // @todo: Функция создания карточки
 
@@ -14,11 +30,16 @@ function createCard(card, deleteCard) {
 
   cardImage.src = card.link;
   cardImage.alt = card.name;
+
+  cardImage.addEventListener('click', openPopup);
+
   cardContent.querySelector(".card__title").textContent = card.name;
 
   deleteCardButton.addEventListener("click", () => {
     deleteCard(cardContent);
   });
+
+  console.log(cardImage.link);
 
   return cardContent;
 }
