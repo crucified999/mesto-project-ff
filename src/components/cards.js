@@ -53,8 +53,8 @@ function createCard(card, deleteCard, likeCard) {
     return cardContent;
 }
 
-function likeCard() {
-    this.classList.toggle("card__like-button_is-active");
+function likeCard(e) {
+    e.target.classList.toggle("card__like-button_is-active");
 }
 
 function deleteCard(card) {

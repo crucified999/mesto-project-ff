@@ -29,4 +29,5 @@ newPlaceForm.addEventListener("submit", (e) => {
     const newPlaceCard = createCard(newPlace, deleteCard, likeCard);
 
     placesList.prepend(newPlaceCard);
+    newPlaceForm.reset();
 });

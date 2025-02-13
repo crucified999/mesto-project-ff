@@ -3,7 +3,7 @@ import { createCard, deleteCard, likeCard } from "./cards.js";
 function openModal(e) {
     let popup;
 
-    switch (this.classList[0]) {
+    switch (e.target.classList[0]) {
         case "profile__add-button":
             popup = document.querySelector(".popup_type_new-card");
 
@@ -23,8 +23,13 @@ function openModal(e) {
 
         case "card__image":
             popup = document.querySelector(".popup_type_image");
+
             const popupCaption = popup.querySelector(".popup__caption");
+            const popupImage = popup.querySelector(".popup__image");
+
             popupCaption.textContent = e.target.alt;
+            popupImage.src = e.target.src;
+            popupImage.alt = e.target.alt;
 
             break;
     }
