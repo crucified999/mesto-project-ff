@@ -1,12 +1,3 @@
-import { createCard, deleteCard, likeCard } from "./cards.js";
-
-function closeOnEsc(e) {
-    if (e.keyCode == 27) {
-        document.querySelector(".popup_is-opened").classList.remove("popup_is-opened");
-        window.removeEventListener("keydown", closeOnEsc);
-    }
-}
-
 function openModal(e) {
     let popup;
 
@@ -41,35 +32,18 @@ function openModal(e) {
             break;
     }
     popup.classList.add("popup_is-opened");
-    window.addEventListener("keydown", closeOnEsc);
+    document.addEventListener("keydown", closeModal);
 }
 
 function closeModal(e) {
     if (
         e.target.classList.contains("popup__close") ||
-        e.target.classList.contains("popup")
+        e.target.classList.contains("popup") ||
+        e.keyCode === 27
     ) {
         document.querySelector(".popup_is-opened").classList.remove("popup_is-opened");
+        document.removeEventListener("keydown", closeModal);
     }
 }
 
-const popups = document.querySelectorAll(".popup");
-
-const profileEditButton = document.querySelector(".profile__edit-button");
-const profileAddButton = document.querySelector(".profile__add-button");
-
-profileEditButton.addEventListener("click", openModal);
-profileAddButton.addEventListener("click", openModal);
-
-popups.forEach((popup) => {
-    popup.classList.add("popup_is-animated");
-    popup.addEventListener("click", closeModal);
-    popup.addEventListener("submit", (e) => {
-        e.preventDefault();
-
-        popup.classList.remove("popup_is-opened");
-    });
-});
-
-
-export { openModal };
+export { openModal, closeModal };

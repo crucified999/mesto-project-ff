@@ -1,7 +1,5 @@
 import { openModal } from "./modals";
 
-const placesList = document.querySelector(".places__list");
-
 const initialCards = [
     {
       name: "Архыз",
@@ -61,10 +59,5 @@ function deleteCard(card) {
     card.remove();
 }
 
-initialCards.forEach((el) => {
-    const card = createCard(el, deleteCard, likeCard);
-    placesList.append(card);
-});
-
-export { placesList, createCard, likeCard, deleteCard };
+export { initialCards, createCard, likeCard, deleteCard };
 
