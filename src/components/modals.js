@@ -1,5 +1,12 @@
 import { createCard, deleteCard, likeCard } from "./cards.js";
 
+function closeOnEsc(e) {
+    if (e.keyCode == 27) {
+        document.querySelector(".popup_is-opened").classList.remove("popup_is-opened");
+        window.removeEventListener("keydown", closeOnEsc);
+    }
+}
+
 function openModal(e) {
     let popup;
 
@@ -34,6 +41,7 @@ function openModal(e) {
             break;
     }
     popup.classList.add("popup_is-opened");
+    window.addEventListener("keydown", closeOnEsc);
 }
 
 function closeModal(e) {
@@ -41,7 +49,7 @@ function closeModal(e) {
         e.target.classList.contains("popup__close") ||
         e.target.classList.contains("popup")
     ) {
-        this.classList.remove("popup_is-opened");
+        document.querySelector(".popup_is-opened").classList.remove("popup_is-opened");
     }
 }
 
@@ -55,7 +63,6 @@ profileAddButton.addEventListener("click", openModal);
 
 popups.forEach((popup) => {
     popup.classList.add("popup_is-animated");
-
     popup.addEventListener("click", closeModal);
     popup.addEventListener("submit", (e) => {
         e.preventDefault();
@@ -63,5 +70,6 @@ popups.forEach((popup) => {
         popup.classList.remove("popup_is-opened");
     });
 });
+
 
 export { openModal };
