@@ -1,10 +1,9 @@
 import "../pages/index.css";
-// import "./components/modals.js"
-import { handleFormSubmit } from "./components/forms.js"
-import { openModal, closeModal } from "./components/modals";
-import { createCard, deleteCard, likeCard, initialCards } from "./components/cards";
+import { handleEditFormSubmit } from "./components/forms.js"
+import { openModal, closeModal } from "./components/modal";
+import { createCard, deleteCard, likeCard } from "./components/card.js";
+import { initialCards } from "./components/cards";
 
-"./components/modals.js";
 
 // @todo: Темплейт карточки
 
@@ -19,23 +18,42 @@ const profileEditButton = document.querySelector(".profile__edit-button");
 const profileAddButton = document.querySelector(".profile__add-button");
 
 const editProfileForm = document.forms["edit-profile"];
+const inputProfileName = editProfileForm.elements.name;
+const intputProfileDescription = editProfileForm.elements.description;
+
+const profileTitle = document.querySelector(".profile__title");
+const profileDescription = document.querySelector(".profile__description");
+
 const newPlaceForm = document.forms["new-place"];
 
 
-profileEditButton.addEventListener("click", openModal);
-profileAddButton.addEventListener("click", openModal);
+profileEditButton.addEventListener("click", () => {
+    const editPopup = document.querySelector(".popup_type_edit");
+
+    inputProfileName.value = document.querySelector(".profile__title").textContent;
+    intputProfileDescription.value = document.querySelector(".profile__description").textContent;
+
+    openModal(editPopup);
+});
+
+profileAddButton.addEventListener("click", () => {
+    const newCardPopup = document.querySelector(".popup_type_new-card");
+
+    openModal(newCardPopup);
+});
 
 popups.forEach((popup) => {
+    const popupCloseButton = popup.querySelector(".popup__close");
+
     popup.classList.add("popup_is-animated");
-    popup.addEventListener("click", closeModal);
+    popupCloseButton.addEventListener("click", () => closeModal(popup));
     popup.addEventListener("submit", (e) => {
         e.preventDefault();
-
-        popup.classList.remove("popup_is-opened");
+        closeModal(popup);
     });
 });
 
-editProfileForm.addEventListener("submit", handleFormSubmit);
+editProfileForm.addEventListener("submit", handleEditFormSubmit);
 
 newPlaceForm.addEventListener("submit", (e) => {
     e.preventDefault();
@@ -55,7 +73,22 @@ newPlaceForm.addEventListener("submit", (e) => {
 // @todo: Функция удаления карточки
 // @todo: Вывести карточки на страницу
 
+function openImagePopup(card) {
+    const cardImagePopup = document.querySelector(".popup_type_image");
+
+    const popupCaption = cardImagePopup.querySelector(".popup__caption");
+    const popupImage = cardImagePopup.querySelector(".popup__image");
+
+    popupCaption.textContent = card.name;
+    popupImage.src = card.link;
+    popupImage.alt = card.name;
+
+    openModal(cardImagePopup);
+}
+
 initialCards.forEach((el) => {
-    const card = createCard(el, deleteCard, likeCard);
+    const card = createCard(el, deleteCard, likeCard, openImagePopup);
     placesList.append(card);
 });
+
+export { inputProfileName, intputProfileDescription, profileTitle, profileDescription, openImagePopup };
