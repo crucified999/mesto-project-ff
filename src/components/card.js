@@ -1,6 +1,4 @@
-import { openImagePopup } from "../index";
-
-function createCard(card, deleteCard, likeCard, onOpenImagePopup) {
+function createCard(card, deleteCard, likeCard, openImagePopup) {
     const cardTemplate = document.querySelector("#card-template").content;
     const cardContent = cardTemplate
         .querySelector(".places__item")
@@ -11,9 +9,7 @@ function createCard(card, deleteCard, likeCard, onOpenImagePopup) {
 
     cardImage.src = card.link;
     cardImage.alt = card.name;
-    cardImage.addEventListener('click', () => {
-        openImagePopup(card);
-    });
+    cardImage.addEventListener("click", openImagePopup);
 
     cardContent.querySelector(".card__title").textContent = card.name;
 

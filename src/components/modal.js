@@ -12,8 +12,16 @@ function closeOnEsc(e) {
     if (e.key === "Escape") {
         const popup = document.querySelector(".popup_is-opened");
 
-        popup.classList.remove("popup_is-opened");
+        closeModal(popup);
     }
 }
 
-export { openModal, closeModal };
+function closeOnOverlay(e) {
+    if (e.target.classList.contains("popup")) {
+        const popup = document.querySelector(".popup_is-opened");
+
+        closeModal(popup);
+    }
+}
+
+export { openModal, closeModal, closeOnOverlay };
