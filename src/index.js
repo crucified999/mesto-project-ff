@@ -51,12 +51,6 @@ popups.forEach((popup) => {
     popup.classList.add("popup_is-animated");
     popupCloseButton.addEventListener("click", () => closeModal(popup));
     popup.addEventListener("click", closeOnOverlay);
-    popup.addEventListener("submit", (e) => {
-        e.preventDefault();
-
-        closeModal(popup);
-    });
-
 });
 
 editProfileForm.addEventListener("submit", handleEditFormSubmit);
@@ -72,7 +66,7 @@ newPlaceForm.addEventListener("submit", (e) => {
     const newPlaceCard = createCard(newPlace, deleteCard, likeCard, openImagePopup);
 
     placesList.prepend(newPlaceCard);
-    newPlaceForm.reset();
+    closeModal(newCardPopup);
 });
 
 // @todo: Функция создания карточки
