@@ -3,10 +3,12 @@ import {
     intputProfileDescription,
     profileTitle,
     profileDescription,
-    editPopup, editProfileFormSubmitButton
+    editPopup,
+    editProfileFormSubmitButton,
+    renderLoading
 } from "../index.js";
 
-import { changeProfileInfo, renderLoading } from "./api"
+import { changeProfileInfo } from "./api"
 import { closeModal } from "./modal";
 
 function handleEditFormSubmit(e) {

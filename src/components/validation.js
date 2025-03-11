@@ -81,5 +81,14 @@ function enableValidation(settings) {
     });
 }
 
+function clearFormInputs(formInputs, formInputErrors, inputErrorClass, errorClass) {
+    for (let i = 0; i < formInputs.length; i++) {
+        const formInput = formInputs[i];
+        const formInputError = formInputErrors[i];
 
-export { checkValidity, enableValidation, clearValidation };
+        clearValidation(formInput, formInputError, inputErrorClass, errorClass);
+    }
+}
+
+
+export { checkValidity, enableValidation, clearValidation, disableSubmitButton, clearFormInputs };

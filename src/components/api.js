@@ -1,14 +1,8 @@
-import { createCard, deleteCard, likeCard } from "./card";
 import {
-    openImagePopup,
-    placesList,
-    profileDescription,
-    profileTitle,
-    profileImage,
-    editProfileFormSubmitButton,
-    inputProfileName, intputProfileDescription, editPopup
+    inputProfileName,
+    intputProfileDescription
 } from "../index";
-import {closeModal} from "./modal";
+
 
 const config = {
     baseUrl: 'https://nomoreparties.co/v1/wff-cohort-34',
@@ -49,7 +43,6 @@ const changeProfileInfo = () => {
     return fetch(`${config.baseUrl}/users/me`, {
 
         method: 'PATCH',
-
         headers: config.headers,
 
         body: JSON.stringify({
@@ -60,39 +53,51 @@ const changeProfileInfo = () => {
 
 }
 
-const changeAvatar = (avatrUrl) => {
+const changeAvatar = (avatarUrl) => {
     return fetch(`${config.baseUrl}/users/me/avatar`, {
         method: 'PATCH',
         headers: config.headers,
         body: JSON.stringify({
-            avatar: avatrUrl,
+            avatar: avatarUrl,
         })
     })
+        .then((response) => {
+            if (response.ok) {
+                return response.json();
+            }
+
+            return Promise.reject(`Ошибка ${response.status}`);
+        })
 }
 
-const likeCardRequest = (e, cardId, counter) => {
+const likeCardRequest = (cardId) => {
 
-    if (!e.target.classList.contains("card__like-button_is-active")) {
-        counter.textContent = Number(counter.textContent) + 1;
-        e.target.classList.add("card__like-button_is-active");
-
-        fetch(`${config.baseUrl}/cards/likes/${cardId}`, {
+        return fetch(`${config.baseUrl}/cards/likes/${cardId}`, {
             method: "PUT",
             headers: config.headers,
-        });
 
-    } else {
-        counter.textContent = Number(counter.textContent) - 1;
-        e.target.classList.remove("card__like-button_is-active");
+        })
+            .then((response) => {
+                if (response.ok) {
+                    return response.json();
+                }
 
-        fetch(`https://nomoreparties.co/v1/wff-cohort-34/cards/likes/${cardId}`, {
-            method: "DELETE",
-            headers: {
-                authorization: "dc9d655b-4c4c-4981-8e4a-cbe7891c9e9e",
+                return Promise.reject(`Ошибка ${response.status}`);
+            })
+}
+
+const unlikeCardRequest = (cardId) => {
+    return fetch(`${config.baseUrl}/cards/likes/${cardId}`, {
+        method: "DELETE",
+        headers: config.headers,
+    })
+        .then((response) => {
+            if (response.ok) {
+                return response.json();
             }
-        });
-    }
 
+            return Promise.reject(`Ошибка ${response.status}`);
+        })
 }
 
 const deleteCardRequest = (cardId) => {
@@ -100,6 +105,13 @@ const deleteCardRequest = (cardId) => {
         method: "DELETE",
         headers: config.headers
     })
+        .then((response) => {
+            if (response.ok) {
+                return response.json();
+            }
+
+            return Promise.reject(`Ошибка ${response.status}`);
+        })
 }
 
 const createNewCard = (newPlace) => {
@@ -111,27 +123,22 @@ const createNewCard = (newPlace) => {
             link: newPlace.link
         }),
     })
-}
+        .then((response) => {
+            if (response.ok) {
+                return response.json();
+            }
 
-function renderLoading(submitButton, isLoading) {
-
-    if (isLoading) {
-        submitButton.textContent = "Сохранение...";
-        submitButton.disabled = true;
-    } else {
-        submitButton.textContent = "Сохранить";
-        submitButton.disabled = false;
-    }
-
+            return Promise.reject(`Ошибка ${response.status}`);
+        })
 }
 
 export {
     getInitialCards,
     getProfileInfo,
     changeProfileInfo,
-    renderLoading,
     createNewCard,
     changeAvatar,
     likeCardRequest,
+    unlikeCardRequest,
     deleteCardRequest
 };

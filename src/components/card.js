@@ -1,4 +1,4 @@
-import { likeCardRequest, deleteCardRequest } from "./api"
+import { likeCardRequest, unlikeCardRequest, deleteCardRequest } from "./api"
 
 function createCard(card, deleteCard, likeCard, openImagePopup) {
     const cardTemplate = document.querySelector("#card-template").content;
@@ -19,21 +19,7 @@ function createCard(card, deleteCard, likeCard, openImagePopup) {
     cardContent.querySelector(".card__title").textContent = card.name;
 
     deleteCardButton.addEventListener("click", () => {
-
-        deleteCardRequest(card.id)
-            .then((response) => {
-                if (response.ok) {
-                    return response.json();
-                }
-
-                return Promise.reject(`Ошибка ${response.status}`);
-            })
-            .catch((err) => {
-                console.log(err);
-            })
-            .finally(() => {
-                deleteCard(cardContent);
-            })
+        deleteCard(card.id, cardContent);
     });
 
     likeCardButton.addEventListener("click", (e) => {
@@ -45,12 +31,39 @@ function createCard(card, deleteCard, likeCard, openImagePopup) {
 
 function likeCard(e, cardId, counter) {
 
-    likeCardRequest(e, cardId, counter);
+    if (!e.target.classList.contains("card__like-button_is-active")) {
+        likeCardRequest(cardId)
+            .then((data) => {
+                counter.textContent = data.likes.length;
+                e.target.classList.add("card__like-button_is-active");
+            })
+            .catch((err) => {
+                console.log(err);
+            })
+
+    } else {
+        unlikeCardRequest(cardId)
+            .then((data) => {
+                counter.textContent = data.likes.length;
+                e.target.classList.remove("card__like-button_is-active");
+            })
+            .catch((err) => {
+                console.log(err);
+            })
+    }
+
 
 }
 
-function deleteCard(card) {
-    card.remove();
+function deleteCard(cardId, cardContent) {
+    deleteCardRequest(cardId)
+        .then(() => {
+            cardContent.remove();
+        })
+        .catch((err) => {
+            console.log(err);
+        })
+
 }
 
 export { createCard, likeCard, deleteCard }
