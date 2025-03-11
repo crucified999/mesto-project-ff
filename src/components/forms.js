@@ -1,13 +1,39 @@
-import { inputProfileName, intputProfileDescription, profileTitle, profileDescription, editPopup } from "../index.js";
+import {
+    inputProfileName,
+    intputProfileDescription,
+    profileTitle,
+    profileDescription,
+    editPopup, editProfileFormSubmitButton
+} from "../index.js";
+
+import { changeProfileInfo, renderLoading } from "./api"
 import { closeModal } from "./modal";
 
 function handleEditFormSubmit(e) {
     e.preventDefault();
 
-    profileTitle.textContent = inputProfileName.value;
-    profileDescription.textContent = intputProfileDescription.value;
+    renderLoading(editProfileFormSubmitButton, true);
 
-    closeModal(editPopup);
+    changeProfileInfo()
+        .then((response) => {
+            if (response.ok) {
+
+                return response.json();
+            }
+
+            return Promise.reject(`Ошибка ${response.status}`);
+        })
+        .catch((err) => {
+            console.log(err);
+        })
+        .finally(() => {
+            renderLoading(editProfileFormSubmitButton, false);
+            closeModal(editPopup);
+
+            profileTitle.textContent = inputProfileName.value;
+            profileDescription.textContent = intputProfileDescription.value;
+        })
+
 }
 
 export { handleEditFormSubmit }
