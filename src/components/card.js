@@ -1,6 +1,6 @@
 import { likeCardRequest, unlikeCardRequest, deleteCardRequest } from "./api"
 
-function createCard(card, deleteCard, likeCard, openImagePopup) {
+function createCard(card, deleteCard, likeCard, openImagePopup, userId) {
     const cardTemplate = document.querySelector("#card-template").content;
     const cardContent = cardTemplate
         .querySelector(".places__item")
@@ -17,6 +17,10 @@ function createCard(card, deleteCard, likeCard, openImagePopup) {
     cardImage.addEventListener("click", openImagePopup);
 
     cardContent.querySelector(".card__title").textContent = card.name;
+
+    if (card.ownerId !== userId) {
+        deleteCardButton.style.display = "none";
+    }
 
     deleteCardButton.addEventListener("click", () => {
         deleteCard(card.id, cardContent);

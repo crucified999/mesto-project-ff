@@ -39,7 +39,7 @@ function checkValidity(formInput, formInputError, inputErrorClass, errorClass) {
 
 }
 
-function disableSubmitButton(formInputs, submitButton, disabledClass) {
+function toggleSubmitButton(formInputs, submitButton, disabledClass) {
     let isValid = true;
 
     formInputs.forEach((input) => {
@@ -76,7 +76,7 @@ function enableValidation(settings) {
         }
 
         form.addEventListener("input", () => {
-            disableSubmitButton(formInputs, formSubmitButton, settings.inactiveButtonClass);
+            toggleSubmitButton(formInputs, formSubmitButton, settings.inactiveButtonClass);
         });
     });
 }
@@ -86,9 +86,12 @@ function clearFormInputs(formInputs, formInputErrors, inputErrorClass, errorClas
         const formInput = formInputs[i];
         const formInputError = formInputErrors[i];
 
+        formInput.value = "";
+        formInputError.value = "";
+
         clearValidation(formInput, formInputError, inputErrorClass, errorClass);
     }
 }
 
 
-export { checkValidity, enableValidation, clearValidation, disableSubmitButton, clearFormInputs };
+export { checkValidity, enableValidation, clearValidation, toggleSubmitButton, clearFormInputs };

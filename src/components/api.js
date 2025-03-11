@@ -50,6 +50,14 @@ const changeProfileInfo = () => {
             about: intputProfileDescription.value
         })
     })
+        .then((response) => {
+            if (response.ok) {
+
+                return response.json();
+            }
+
+            return Promise.reject(`Ошибка ${response.status}`);
+        })
 
 }
 

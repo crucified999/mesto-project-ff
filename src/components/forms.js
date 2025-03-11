@@ -17,23 +17,18 @@ function handleEditFormSubmit(e) {
     renderLoading(editProfileFormSubmitButton, true);
 
     changeProfileInfo()
-        .then((response) => {
-            if (response.ok) {
+        .then(() => {
+            profileTitle.textContent = inputProfileName.value;
+            profileDescription.textContent = intputProfileDescription.value;
 
-                return response.json();
-            }
-
-            return Promise.reject(`Ошибка ${response.status}`);
+            closeModal(editPopup);
         })
+
         .catch((err) => {
             console.log(err);
         })
         .finally(() => {
             renderLoading(editProfileFormSubmitButton, false);
-            closeModal(editPopup);
-
-            profileTitle.textContent = inputProfileName.value;
-            profileDescription.textContent = intputProfileDescription.value;
         })
 
 }

@@ -3,7 +3,7 @@ import { getProfileInfo, createNewCard, changeAvatar, getInitialCards } from "./
 import { handleEditFormSubmit } from "./components/forms.js"
 import { openModal, closeModal, closeOnOverlay } from "./components/modal";
 import { createCard, deleteCard, likeCard } from "./components/card.js";
-import { checkValidity, enableValidation, disableSubmitButton, clearFormInputs } from "./components/validation";
+import { checkValidity, enableValidation, toggleSubmitButton, clearFormInputs } from "./components/validation";
 
 
 // @todo: Темплейт карточки
@@ -22,29 +22,22 @@ import { checkValidity, enableValidation, disableSubmitButton, clearFormInputs }
 //     });
 
 Promise.all([getProfileInfo(), getInitialCards()])
-    .then((response) => {
+    .then(([profile, cards]) => {
+        profileTitle.textContent = profile.name;
+        profileDescription.textContent = profile.about;
+        profileImage.style.backgroundImage = `url(${profile.avatar})`;
 
-        const profileInfo = response[0];
-        const initialCards = response[1];
-
-        profileTitle.textContent = profileInfo.name;
-        profileDescription.textContent = profileInfo.about;
-        profileImage.style.backgroundImage = `url(${profileInfo.avatar})`;
-
-        initialCards.forEach((c) => {
+        cards.forEach((c) => {
             const cardInfo = {
                 name: c.name,
                 link: c.link,
                 likes: c.likes.length,
                 id: c["_id"],
+                ownerId: c.owner["_id"]
             };
-            const card = createCard(cardInfo, deleteCard, likeCard, openImagePopup);
+            const card = createCard(cardInfo, deleteCard, likeCard, openImagePopup, profile["_id"]);
 
-            if (c.owner["_id"] !== profileInfo["_id"]) {
-                card.querySelector(".card__delete-button").style.display = 'none';
-            }
-
-            if (c.likes.some((owner) => owner["_id"] === profileInfo["_id"])) {
+            if (c.likes.some((owner) => owner["_id"] === profile["_id"])) {
                 card.querySelector(".card__like-button").classList.add("card__like-button_is-active");
             }
 
@@ -103,16 +96,6 @@ const avatarForm = document.forms["avatar"];
 const avatarFormInput = avatarForm.elements.avatar;
 const avatarFormSumbitButton = avatarForm.querySelector(".popup__button");
 
-newPlaceFormInputs.forEach((input) => {
-
-    const inputError = newPlaceForm.querySelector(`input[name='${input.name}'] + .popup__error`);
-
-    input.addEventListener("input", () => {
-        checkValidity(input, inputError, settings.inputErrorClass, settings.errorClass);
-    });
-
-})
-
 profileEditButton.addEventListener("click", () => {
 
     inputProfileName.value = profileTitle.textContent;
@@ -123,7 +106,7 @@ profileEditButton.addEventListener("click", () => {
 
 profileAddButton.addEventListener("click", () => {
     openModal(newCardPopup);
-    disableSubmitButton(editProfileFormInputs, editProfileFormSubmitButton, settings.inactiveButtonClass);
+    toggleSubmitButton(editProfileFormInputs, editProfileFormSubmitButton, settings.inactiveButtonClass);
     newPlaceFormSubmitButton.classList.add(`${settings.inactiveButtonClass}`);
 });
 
@@ -139,6 +122,7 @@ avatarForm.addEventListener("submit", (e) => {
     changeAvatar(avatarFormInput.value)
         .then(() => {
             profileImage.style.backgroundImage = `url(${avatarFormInput.value})`;
+            avatarFormInput.value = "";
 
             closeModal(avatarPopup);
         })
@@ -173,17 +157,20 @@ newPlaceForm.addEventListener("submit", (e) => {
 
     createNewCard(cardInfo)
         .then((data) => {
+            console.log(data);
             const newPlace = {
                 name: data.name,
                 link: data.link,
                 likes: data.likes.length,
-                id: data["_id"]
+                id: data["_id"],
+                ownerId: data.owner["_id"],
             }
 
-            const newPlaceCard = createCard(newPlace, deleteCard, likeCard, openImagePopup);
+            const newPlaceCard = createCard(newPlace, deleteCard, likeCard, openImagePopup, newPlace.ownerId);
 
             placesList.prepend(newPlaceCard);
             closeModal(newCardPopup);
+            clearFormInputs(newPlaceFormInputs, newPlaceFormInputErrors, settings.inputErrorClass, settings.errorClass);
 
         })
         .catch((err) => {
@@ -191,8 +178,6 @@ newPlaceForm.addEventListener("submit", (e) => {
         })
         .finally(() => {
             renderLoading(newPlaceFormSubmitButton, false);
-
-            clearFormInputs(newPlaceFormInputs, newPlaceFormInputErrors, settings.inputErrorClass, settings.errorClass);
         })
 
 });
