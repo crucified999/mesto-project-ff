@@ -3,23 +3,13 @@ import { getProfileInfo, createNewCard, changeAvatar, getInitialCards } from "./
 import { handleEditFormSubmit } from "./components/forms.js"
 import { openModal, closeModal, closeOnOverlay } from "./components/modal";
 import { createCard, deleteCard, likeCard } from "./components/card.js";
-import { checkValidity, enableValidation, toggleSubmitButton, clearFormInputs } from "./components/validation";
+import { enableValidation, toggleSubmitButton, clearFormInputs } from "./components/validation";
 
 
 // @todo: Темплейт карточки
 
 
 // @todo: DOM узлы
-
-// const profile = getProfileInfo()
-//     .then((data) => {
-//     profileTitle.textContent = data.name;
-//     profileDescription.textContent = data.about;
-//     profileImage.style.backgroundImage = `url(${data.avatar})`;
-// })
-//     .catch((err) => {
-//         console.log(err);
-//     });
 
 Promise.all([getProfileInfo(), getInitialCards()])
     .then(([profile, cards]) => {
@@ -31,15 +21,12 @@ Promise.all([getProfileInfo(), getInitialCards()])
             const cardInfo = {
                 name: c.name,
                 link: c.link,
-                likes: c.likes.length,
+                likes: c.likes,
                 id: c["_id"],
                 ownerId: c.owner["_id"]
             };
-            const card = createCard(cardInfo, deleteCard, likeCard, openImagePopup, profile["_id"]);
 
-            if (c.likes.some((owner) => owner["_id"] === profile["_id"])) {
-                card.querySelector(".card__like-button").classList.add("card__like-button_is-active");
-            }
+            const card = createCard(cardInfo, deleteCard, likeCard, openImagePopup, profile["_id"]);
 
             placesList.append(card);
         });
@@ -161,7 +148,7 @@ newPlaceForm.addEventListener("submit", (e) => {
             const newPlace = {
                 name: data.name,
                 link: data.link,
-                likes: data.likes.length,
+                likes: data.likes,
                 id: data["_id"],
                 ownerId: data.owner["_id"],
             }

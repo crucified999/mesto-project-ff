@@ -10,7 +10,7 @@ function createCard(card, deleteCard, likeCard, openImagePopup, userId) {
     const cardLikesAmount = cardContent.querySelector(".card__likes-amount");
     const cardImage = cardContent.querySelector(".card__image");
 
-    cardLikesAmount.textContent = card.likes;
+    cardLikesAmount.textContent = card.likes.length;
 
     cardImage.src = card.link;
     cardImage.alt = card.name;
@@ -20,6 +20,10 @@ function createCard(card, deleteCard, likeCard, openImagePopup, userId) {
 
     if (card.ownerId !== userId) {
         deleteCardButton.style.display = "none";
+    }
+
+    if (card.likes.some((owner) => owner["_id"] === userId)) {
+        likeCardButton.classList.add("card__like-button_is-active");
     }
 
     deleteCardButton.addEventListener("click", () => {
